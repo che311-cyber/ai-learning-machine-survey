@@ -154,8 +154,20 @@ const BI_VARIANTS={
 function lcg(seed){return function(){seed=(seed*9301+49297)%233280;return seed/233280}}
 function shuffled(arr,seed){const r=lcg(seed);const a=arr.slice();
  for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
-const ORDER=(()=>{const o=shuffled(SCALE.map(x=>x.id),20261017);o.splice(23,0,TRAP.id);return o})();
-const ITEM_TEXT=Object.assign({},Object.fromEntries(SCALE.map(x=>[x.id,x.t])),{[TRAP.id]:TRAP.t});
+let ORDER=[], ORDER_GROUP=null;
+function makeOrder(group){
+ ORDER_GROUP=group;
+ const ids=shuffled([...SCALE.map(x=>x.id),...BI_VARIANTS[group].map(x=>x.id)],20261017);
+ ids.splice(23,0,TRAP.id);
+ return ids;
+}
+function textOf(id){
+ if(id===TRAP.id)return TRAP.t;
+ const bi=ORDER_GROUP&&BI_VARIANTS[ORDER_GROUP].find(x=>x.id===id);
+ if(bi)return bi.t;
+ const s=SCALE.find(x=>x.id===id);
+ return s?s.t:"";
+}
 
 /* ================= 行为题与人口学 ================= */
 const BEHAVIOR={
@@ -271,6 +283,7 @@ function renderScreen(){
   if(!S.s.S1||!S.s.S2||!S.s.S3){shakeApp();return}
   if(S.s.S1==="其他"){go("end");return}
   S.group=(S.s.S3==="已购买")?"buyer":"potential";
+  makeOrder(S.group);
   go("scale");
  });
 }
@@ -285,7 +298,7 @@ function renderScale(){
  <div class="qtitle">第二部分 · 量表题（共${total}题）</div>
  <div class="note">请按真实感受为下列说法打分：<b>1=非常不同意，2=比较不同意，3=一般，4=比较同意，5=非常同意</b>。题目没有对错之分，凭第一感觉作答即可。</div>
  <div class="legend"><span>1<br>非常不同意</span><span>2<br>比较不同意</span><span>3<br>一般</span><span>4<br>比较同意</span><span>5<br>非常同意</span></div>
- ${ORDER.map((id,i)=>`<div class="q" data-qid="${id}"><div class="no">${i+1} / ${total}</div><div class="t">${esc(ITEM_TEXT[id])}</div>${likert(id)}</div>`).join("")}
+ ${ORDER.map((id,i)=>`<div class="q" data-qid="${id}"><div class="no">${i+1} / ${total}</div><div class="t">${esc(textOf(id))}</div>${likert(id)}</div>`).join("")}
  <div style="height:6px"></div>`;
  const update=()=>{
   const done=ORDER.filter(id=>S.ans[id]).length,left=total-done;
@@ -434,6 +447,7 @@ else{
   if(d&&["scale","behavior","demo"].includes(d.page)){
    Object.assign(S,{page:d.page,group:d.group,s:d.s||{},ans:d.ans||{},beh:d.beh||{},demo:d.demo||{},start:d.start||Date.now()});
    if(confirm("检测到您有一份未完成的问卷，是否继续作答？（点“取消”将重新开始）")){
+    if(S.group)makeOrder(S.group);
     R[d.page]();resumed=true;
    }else{localStorage.removeItem(LS_DRAFT);S.ans={};S.s={};S.beh={};S.demo={};S.group=null;S.page="cover"}
   }}catch(e){}
