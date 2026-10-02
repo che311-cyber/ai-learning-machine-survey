@@ -157,9 +157,9 @@ function shuffled(arr,seed){const r=lcg(seed);const a=arr.slice();
 let ORDER=[], ORDER_GROUP=null;
 function makeOrder(group){
  ORDER_GROUP=group;
- const ids=shuffled([...SCALE.map(x=>x.id),...BI_VARIANTS[group].map(x=>x.id)],20261017);
- ids.splice(23,0,TRAP.id);
- return ids;
+ ORDER=shuffled([...SCALE.map(x=>x.id),...BI_VARIANTS[group].map(x=>x.id)],20261017);
+ ORDER.splice(23,0,TRAP.id);
+ return ORDER;
 }
 function textOf(id){
  if(id===TRAP.id)return TRAP.t;
