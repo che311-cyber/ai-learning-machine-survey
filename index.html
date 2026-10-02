@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
+<title>AI学习机家长调查问卷</title>
+<script src="config.js"></script>
+<style>
+:root{
+  --ink:#0f172a; --sub:#5b6b81; --line:#e3e9f1; --bg:#eef2f7;
+  --brand:#2563eb; --brand-dark:#1e3a8a; --teal:#0d9488;
+  --card:#ffffff; --ok:#059669; --warn:#d97706;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--ink); font-size:17px; line-height:1.65;
+}
+#bar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--brand),var(--teal));width:0;transition:width .35s ease;z-index:50}
+.wrap{max-width:640px;margin:0 auto;padding:18px 16px 110px}
+.hero{
+  background:linear-gradient(135deg,#16294d 0%,#1e40af 52%,#0d9488 120%);
+  color:#fff;border-radius:20px;padding:30px 22px 26px;margin-top:10px;
+  box-shadow:0 12px 30px rgba(30,64,175,.25);
+}
+.hero .kicker{font-size:13px;letter-spacing:2px;opacity:.85;margin-bottom:8px}
+.hero h1{font-size:26px;line-height:1.35;margin:0 0 10px;font-weight:700}
+.hero h1 .q{color:#ffd166}
+.hero p.sub{margin:0;font-size:14.5px;opacity:.92}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:999px;padding:4px 12px;font-size:13px}
+.card{background:var(--card);border-radius:16px;padding:20px 18px;margin-top:14px;box-shadow:0 4px 14px rgba(15,23,42,.06)}
+.card h2{font-size:18px;margin:0 0 10px}
+.card p{margin:8px 0;color:#24324a}
+.muted{color:var(--sub);font-size:14px}
+.note{background:#f0f6ff;border-left:4px solid var(--brand);border-radius:8px;padding:10px 12px;font-size:14px;color:#1e3a8a;margin:10px 0}
+.note.amber{background:#fff7ed;border-color:var(--warn);color:#92400e}
+.stepbar{display:flex;gap:6px;margin:14px 0 2px}
+.stepbar i{flex:1;height:5px;border-radius:3px;background:#d7e0ec}
+.stepbar i.on{background:linear-gradient(90deg,var(--brand),var(--teal))}
+.qtitle{font-size:13px;color:var(--sub);letter-spacing:1px;margin:16px 4px 6px;font-weight:600}
+.q{background:var(--card);border-radius:14px;padding:16px 15px 14px;margin-top:10px;box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.q .no{font-size:12.5px;color:var(--sub);margin-bottom:4px;font-weight:600}
+.q .t{font-size:16.5px;line-height:1.55;margin-bottom:12px}
+.likert{display:flex;gap:7px}
+.likert button{
+  flex:1;height:48px;border-radius:12px;border:1.5px solid var(--line);
+  background:#f8fafc;font-weight:700;font-size:17px;color:#54647d;cursor:pointer;
+  transition:all .12s ease;touch-action:manipulation;
+}
+.likert button:active{transform:scale(.94)}
+.likert button.sel{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 4px 10px rgba(37,99,235,.3)}
+.legend{position:sticky;top:10px;z-index:10;display:flex;gap:6px;background:rgba(238,242,247,.92);backdrop-filter:blur(4px);padding:7px 2px;border-radius:10px}
+.legend span{flex:1;text-align:center;font-size:11.5px;color:var(--sub);background:#fff;border-radius:8px;padding:4px 0;border:1px solid var(--line)}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opts button{
+  text-align:left;min-height:48px;border-radius:12px;border:1.5px solid var(--line);
+  background:#f8fafc;padding:11px 14px;font-size:16px;color:#22314a;cursor:pointer;
+  display:flex;align-items:center;gap:10px;transition:all .12s ease;touch-action:manipulation;
+}
+.opts button:active{transform:scale(.985)}
+.opts button.sel{border-color:var(--brand);background:#eaf1ff;color:#12306e;font-weight:600}
+.opts button .dot{width:20px;height:20px;border-radius:50%;border:2px solid #b9c6d8;flex:none;position:relative}
+.opts button.sel .dot{border-color:var(--brand)}
+.opts button.sel .dot::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--brand)}
+.opts.multi button .dot{border-radius:6px}
+.opts.multi button.sel .dot::after{border-radius:3px}
+.bottombar{
+  position:fixed;bottom:0;left:0;right:0;padding:12px 16px calc(14px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(238,242,247,0),var(--bg) 34%);
+}
+.btn{
+  display:block;width:100%;max-width:608px;margin:0 auto;height:52px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,var(--brand-dark),var(--brand) 60%,#0d9488);
+  color:#fff;font-size:17.5px;font-weight:700;cursor:pointer;box-shadow:0 8px 18px rgba(30,64,175,.32);
+  touch-action:manipulation;
+}
+.btn:active{transform:scale(.985)}
+.btn.ghost{background:#fff;color:var(--brand);border:1.5px solid #c9d8f5;box-shadow:none}
+.remain{position:fixed;bottom:calc(76px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;pointer-events:none}
+.remain b{background:#0f172ae6;color:#fff;font-size:13px;font-weight:600;border-radius:999px;padding:5px 14px}
+.done{font-size:44px;text-align:center;margin-top:6px}
+.thanks .card{text-align:center;padding:30px 20px}
+.footer{color:#8b9bb1;font-size:12.5px;text-align:center;margin-top:22px;line-height:1.8}
+table.adm{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+table.adm td,table.adm th{border:1px solid var(--line);padding:6px 8px;text-align:left}
+.btnrow{display:flex;gap:10px;margin-top:12px}
+.btnrow .btn{flex:1}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div class="wrap" id="app"></div>
+<div class="bottombar" id="bb" hidden><button class="btn" id="mainbtn"></button></div>
+<div class="remain" id="remain" hidden><b></b></div>
+
+<script>
+"use strict";
+/* ================= 题库（正式稿 v3，与附录A一致） ================= */
+const SCALE=[
+ {id:"PE1",t:"使用AI学习机能提高孩子的学习效率"},
+ {id:"PE2",t:"AI学习机的诊断/批改功能能帮孩子找准薄弱环节"},
+ {id:"PE3",t:"用AI学习机查错讲题，孩子能省不少功夫"},
+ {id:"PE4",t:"总体而言，AI学习机对孩子成绩提升有帮助"},
+ {id:"EE1",t:"孩子能独立操作AI学习机，不需要家长反复教"},
+ {id:"EE2",t:"AI学习机的各项功能容易上手"},
+ {id:"EE3",t:"我能容易地看懂学情报告和功能界面"},
+ {id:"SI1",t:"身边不少家长都在讨论或购买AI学习机"},
+ {id:"SI2",t:"孩子班级里有同学在用AI学习机"},
+ {id:"SI3",t:"家长群里的推荐会影响我的想法"},
+ {id:"PV1",t:"相比线下辅导班，AI学习机的价格是合理的"},
+ {id:"PV2",t:"考虑到功能与资源，AI学习机物有所值"},
+ {id:"PV3",t:"后续会员/续费费用在我可接受范围内"},
+ {id:"TRA1",t:"我相信AI学习机的批改和诊断是准确的"},
+ {id:"TRA2",t:"我相信它能兑现宣传的核心功能"},
+ {id:"TRA3",t:"我相信它的题库和课程资源是专业可靠的"},
+ {id:"TRB1",t:"我相信厂商会妥善处理使用中出现的问题"},
+ {id:"TRB2",t:"我相信厂商不会在条款里设置损害消费者的陷阱"},
+ {id:"TRB3",t:"我相信厂商重视孩子的长期使用效果而非只管卖货"},
+ {id:"TRC1",t:"我相信厂商宣传与实际功能一致，没有夸大"},
+ {id:"TRC2",t:"我相信收费规则透明，没有隐藏费用"},
+ {id:"TRC3",t:"我相信厂商会如实说明数据的收集和使用方式"},
+ {id:"PRA1",t:"我担心AI诊断不准确，反而误导孩子"},
+ {id:"PRA2",t:"我担心实际功能与宣传差距大"},
+ {id:"PRA3",t:"我担心内容与孩子所用教材不同步"},
+ {id:"PRB1",t:"我担心花几千元买来却没什么效果"},
+ {id:"PRB2",t:"我担心购买后还有不断追加的会员费用"},
+ {id:"PRB3",t:"我担心买后很快降价或产品过时"},
+ {id:"PRC1",t:"我担心孩子的个人信息被过度收集"},
+ {id:"PRC2",t:"我担心学习数据被用于其他商业用途"},
+ {id:"PRC3",t:"我担心摄像头/语音等功能带来隐私泄露"},
+ {id:"ATT1",t:"让孩子使用AI学习机是一个好主意"},
+ {id:"ATT2",t:"我对AI学习机总体持积极看法"},
+ {id:"ATT3",t:"让孩子使用AI学习机是明智的选择"}
+];
+const TRAP={id:"TRAP",t:"本题请选择\u201c比较不同意\u201d"};
+const BI_VARIANTS={
+ buyer:[
+  {id:"BI1",t:"我愿意为它续费/续购会员服务"},
+  {id:"BI2",t:"我会继续让孩子使用它"},
+  {id:"BI3",t:"我愿意向其他家长推荐AI学习机"}
+ ],
+ potential:[
+  {id:"BI1",t:"我愿意为孩子购买AI学习机"},
+  {id:"BI2",t:"在同类产品中我会优先选择它"},
+  {id:"BI3",t:"我愿意向其他家长推荐AI学习机"}
+ ]
+};
+/* 题序按构念随机打乱（固定随机种子20261017，与调查保持一致），陷阱题固定第24题位 */
+function lcg(seed){return function(){seed=(seed*9301+49297)%233280;return seed/233280}}
+function shuffled(arr,seed){const r=lcg(seed);const a=arr.slice();
+ for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
+const ORDER=(()=>{const o=shuffled(SCALE.map(x=>x.id),20261017);o.splice(23,0,TRAP.id);return o})();
+const ITEM_TEXT=Object.assign({},Object.fromEntries(SCALE.map(x=>[x.id,x.t])),{[TRAP.id]:TRAP.t});
+
+/* ================= 行为题与人口学 ================= */
+const BEHAVIOR={
+ buyer:[
+  {key:"brand",type:"single",title:"您购买的AI学习机品牌是？（为保证匿名，以字母代称）",
+   opts:["品牌A","品牌B","品牌C","品牌D","品牌E","品牌F","其他品牌"]},
+  {key:"price",type:"single",title:"购买价格大约在哪个区间？",
+   opts:["2000元以下","2000—2999元","3000—3999元","4000—4999元","5000元及以上"]},
+  {key:"hold",type:"single",title:"购买至今多长时间？",
+   opts:["3个月以内","3—6个月","6—12个月","1—2年","2年以上"]},
+  {key:"weekly",type:"single",title:"孩子每周实际使用AI学习机的时长约为？",
+   opts:["3小时以下","3—7小时","7—14小时","14小时以上"]},
+  {key:"funcs",type:"multi",title:"孩子主要使用哪些功能？（可多选）",
+   opts:["作业批改与错题诊断","AI问答与知识点讲解","同步课程与预习复习","个性化精准学/推荐学","学情报告查看","英语口语或听写评测","内置娱乐模块（小游戏、视频等）","其他功能"]}
+ ],
+ potential:[
+  {key:"channels",type:"multi",title:"您主要通过哪些渠道接触到AI学习机信息？（可多选）",
+   opts:["短视频/直播平台","电商平台商品页与评价","线下门店或体验店","家长群或亲友推荐","学校、老师相关渠道"]},
+  {key:"reasons",type:"multi",title:"目前还没有购买的主要原因是什么？（可多选）",
+   opts:["价格贵，后续费用不透明","担心\u201c伪智能\u201d误导孩子","担心孩子沉迷娱乐功能","担心隐私与数据安全","孩子已有其他学习安排（网课/辅导班等）","还在观望，暂无急迫需求"]}
+ ]
+};
+const DEMO=[
+ {key:"role",type:"single",title:"您是孩子的——",opts:["母亲","父亲","祖辈或其他监护人"]},
+ {key:"age",type:"single",title:"您的年龄——",opts:["25岁及以下","26—35岁","36—45岁","46岁及以上"]},
+ {key:"edu",type:"single",title:"您的学历——",opts:["高中及以下","大专","本科","硕士及以上"]},
+ {key:"income",type:"single",title:"家庭月收入——",opts:["1万元以下","1—2万元","2—3万元","3—5万元","5万元以上"]},
+ {key:"district",type:"single",title:"您家庭所在城区——",opts:["洪山区","武昌区","江岸区","汉阳区","硚口区","江汉区","青山区","武汉其他区或非武汉"]}
+];
+const S1_OPTS=["小学低年级","小学高年级","初中","其他"];
+
+/* ================= 状态 ================= */
+const S={page:"cover",group:null,s:{},ans:{},beh:{},demo:{},start:Date.now()};
+const CFG=(window.SURVEY_CONFIG||{});
+const LS_RESP="xdtx_responses_v1", LS_DRAFT="xdtx_draft_v1";
+const app=document.getElementById("app"), bb=document.getElementById("bb"),
+      mainbtn=document.getElementById("mainbtn"), remainEl=document.getElementById("remain");
+
+/* ================= 工具 ================= */
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+function saveDraft(){try{localStorage.setItem(LS_DRAFT,JSON.stringify(S))}catch(e){}}
+function saveResponse(p){try{const a=JSON.parse(localStorage.getItem(LS_RESP)||"[]");a.push(p);
+ localStorage.setItem(LS_RESP,JSON.stringify(a))}catch(e){}}
+function straightRun(){const v=ORDER.map(id=>S.ans[id]);let run=1,max=1;
+ for(let i=1;i<v.length;i++){run=v[i]===v[i-1]?run+1:1;if(run>max)max=run}return max}
+function buildPayload(){
+ const end=Date.now();
+ return {ver:"v3-web",group:S.group,s:S.s,answers:S.ans,behavior:S.beh,demo:S.demo,
+  flags:{trap_ok:S.ans.TRAP===2,straight_run:straightRun()},
+  meta:{start:new Date(S.start).toISOString(),end:new Date(end).toISOString(),
+   duration_sec:Math.round((end-S.start)/1000),ua:navigator.userAgent,
+   screen:window.innerWidth+"x"+window.innerHeight}};
+}
+function postEndpoint(payload){
+ if(!CFG.endpoint)return;
+ try{fetch(CFG.endpoint,{method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify(payload)}).catch(()=>{})}catch(e){}
+}
+
+/* ================= 渲染 ================= */
+const PAGES=["cover","screen","scale","behavior","demo","thanks"];
+function setProgress(){
+ const i=PAGES.indexOf(S.page);const pct=i<0?100:Math.round(i/(PAGES.length-1)*100);
+ document.getElementById("bar").style.width=pct+"%";
+}
+function stepsHtml(){
+ const names=["导语","甄别","量表","行为与背景","基本信息"];
+ const cur=PAGES.indexOf(S.page);
+ return '<div class="stepbar">'+PAGES.slice(0,4).map((p,i)=>
+   '<i class="'+(i<=Math.min(cur,3)?"on":"")+'"></i>').join("")+'</div>';
+}
+function showBottom(label,fn){bb.hidden=false;mainbtn.textContent=label;
+ mainbtn.onclick=fn}
+function hideBottom(){bb.hidden=true;remainEl.hidden=true}
+
+function renderCover(){
+ hideBottom();setProgress();
+ app.innerHTML=`
+ ${stepsHtml()}
+ <div class="hero">
+  <div class="kicker">义务教育阶段学生家长问卷调查</div>
+  <h1>学习有<span class="q">“机”</span>，“信”关天下</h1>
+  <p class="sub">AI学习机家长调查问卷 —— 信任形成机制与付费意愿影响因素调查</p>
+  <div class="chips"><span class="chip">⏱ 约8分钟</span><span class="chip">🔒 匿名作答</span><span class="chip">✅ 无对错之分</span></div>
+ </div>
+ <div class="card">
+  <h2>亲爱的家长朋友：</h2>
+  <p>您好！我们正在开展一项关于中小学生家长对AI学习机（学习平板/AI家教机等）看法的学术调查，希望了解您对这类产品的真实评价与购买意愿。</p>
+  <p class="muted">· 本问卷采取匿名方式，不会收集您或孩子的姓名、联系方式等身份信息；<br>
+  · 所有数据仅用于学术研究，整体统计结果不针对任何个人；<br>
+  · 问卷中的量表题没有对错、好坏之分，请按您的真实感受作答；<br>
+  · 参与完全自愿，您可随时退出。</p>
+  <div class="note">问卷分两部分：第一部分请您对一些说法打分（1—5分）；第二部分了解您家的情况。完成约需8分钟，感谢您的支持！</div>
+ </div>
+ <div class="footer">学习有“机”，“信”关天下 · 调查组<br>（按匿名评审要求，团队与指导教师信息从略）</div>`;
+ showBottom("开始作答",()=>{S.start=Date.now();go("screen")});
+}
+
+function renderScreen(){
+ hideBottom();setProgress();
+ const radio=(key,i,lab)=>`<button type="button" class="${S.s[key]===lab?"sel":""}" data-a="radio" data-key="${key}" data-val="${esc(lab)}"><span class="dot"></span>${esc(lab)}</button>`;
+ app.innerHTML=`
+ ${stepsHtml()}
+ <div class="qtitle">第一部分 · 甄别与基本情况</div>
+ <div class="q"><div class="no">S1</div><div class="t">您的孩子目前就读阶段为？</div>
+  <div class="opts">${S1_OPTS.map((o,i)=>radio("S1",i,o)).join("")}</div></div>
+ <div class="q"><div class="no">S2</div><div class="t">您是否听说过AI学习机（学习平板/AI家教机等）？</div>
+  <div class="opts">${["听说过","没听说过"].map(o=>radio("S2",0,o)).join("")}</div></div>
+ <div class="q"><div class="no">S3</div><div class="t">您家是否已购买AI学习机？</div>
+  <div class="opts">${["已购买","还没购买，但了解或考虑过"].map(o=>radio("S3",0,o)).join("")}</div></div>
+ <div class="muted" style="margin:12px 6px 0">* 本问卷将根据S3的回答为您呈现略有不同的后续题目（已购家长回答使用体验与续费意愿，未购家长回答购买意愿）。</div>`;
+ showBottom("下一部分",()=>{
+  if(!S.s.S1||!S.s.S2||!S.s.S3){shakeApp();return}
+  if(S.s.S1==="其他"){go("end");return}
+  S.group=(S.s.S3==="已购买")?"buyer":"potential";
+  go("scale");
+ });
+}
+
+function renderScale(){
+ setProgress();
+ const total=ORDER.length;
+ const likert=id=>`<div class="likert">${[1,2,3,4,5].map(v=>
+   `<button type="button" aria-pressed="${S.ans[id]===v}" class="${S.ans[id]===v?"sel":""}" data-a="likert" data-id="${id}" data-val="${v}">${v}</button>`).join("")}</div>`;
+ app.innerHTML=`
+ ${stepsHtml()}
+ <div class="qtitle">第二部分 · 量表题（共${total}题）</div>
+ <div class="note">请按真实感受为下列说法打分：<b>1=非常不同意，2=比较不同意，3=一般，4=比较同意，5=非常同意</b>。题目没有对错之分，凭第一感觉作答即可。</div>
+ <div class="legend"><span>1<br>非常不同意</span><span>2<br>比较不同意</span><span>3<br>一般</span><span>4<br>比较同意</span><span>5<br>非常同意</span></div>
+ ${ORDER.map((id,i)=>`<div class="q" data-qid="${id}"><div class="no">${i+1} / ${total}</div><div class="t">${esc(ITEM_TEXT[id])}</div>${likert(id)}</div>`).join("")}
+ <div style="height:6px"></div>`;
+ const update=()=>{
+  const done=ORDER.filter(id=>S.ans[id]).length,left=total-done;
+  document.getElementById("bar").style.width=(20+Math.round(done/total*45))+"%";
+  if(left>0){remainEl.hidden=false;remainEl.querySelector("b").textContent="还剩 "+left+" 题"}else{remainEl.hidden=true}
+  mainbtn.textContent=left>0?("已答 "+done+" / "+total+" 题"):"进入下一部分";
+ };
+ update();
+ showBottom("",()=>{
+  const miss=ORDER.find(id=>!S.ans[id]);
+  if(miss){const el=app.querySelector('[data-qid="'+miss+'"]');
+   el.scrollIntoView({behavior:"smooth",block:"center"});el.classList.add("shake");
+   setTimeout(()=>el.classList.remove("shake"),450);return}
+  go("behavior");
+ });
+}
+
+function renderBehavior(){
+ setProgress();
+ const defs=BEHAVIOR[S.group];
+ const block=(q)=>`<div class="q"><div class="t">${esc(q.title)}</div>
+  <div class="opts ${q.type==="multi"?"multi":""}">${q.opts.map(o=>
+   `<button type="button" class="${(q.type==="multi"?(S.beh[q.key]||[]).includes(o):S.beh[q.key]===o)?"sel":""}" data-a="${q.type==="multi"?"multi":"beh1"}" data-key="${q.key}" data-val="${esc(o)}"><span class="dot"></span>${esc(o)}</button>`).join("")}</div></div>`;
+ app.innerHTML=`
+ ${stepsHtml()}
+ <div class="qtitle">第三部分 · ${S.group==="buyer"?"使用行为（已购家长）":"信息渠道与未购原因（未购家长）"}</div>
+ ${defs.map(block).join("")}`;
+ showBottom("进入下一部分",()=>{
+  const ok=defs.every(q=>q.type==="multi"?(S.beh[q.key]&&S.beh[q.key].length):(!!S.beh[q.key]));
+  if(!ok){shakeApp();return}
+  go("demo");
+ });
+}
+
+function renderDemo(){
+ setProgress();
+ const block=(q)=>`<div class="q"><div class="t">${esc(q.title)}</div>
+  <div class="opts">${q.opts.map(o=>
+   `<button type="button" class="${S.demo[q.key]===o?"sel":""}" data-a="single" data-key="${q.key}" data-val="${esc(o)}"><span class="dot"></span>${esc(o)}</button>`).join("")}</div></div>`;
+ app.innerHTML=`
+ ${stepsHtml()}
+ <div class="qtitle">第四部分 · 基本信息（仅用于统计分析，完全匿名）</div>
+ ${DEMO.map(block).join("")}
+ <div class="muted" style="margin:12px 6px 0">* 您孩子的就读阶段已在开头登记（${esc(S.s.S1||"")}），无需重复填写。</div>`;
+ showBottom("提交问卷",()=>{
+  if(!DEMO.every(q=>!!S.demo[q.key])){shakeApp();return}
+  const p=buildPayload();
+  saveResponse(p);postEndpoint(p);
+  try{localStorage.removeItem(LS_DRAFT)}catch(e){}
+  go("thanks");
+ });
+}
+
+function renderThanks(){
+ hideBottom();setProgress();
+ app.innerHTML=`
+ <div class="thanks">
+  <div class="done">🎉</div>
+  <div class="card">
+   <h2 style="margin-bottom:8px">提交成功，衷心感谢！</h2>
+   <p>您的回答已记录。每一份问卷都将汇入整体统计，帮助研究者更准确地理解家长对AI学习机的信任与选择。</p>
+   <p class="muted">本问卷匿名作答，请放心。也欢迎转发给身边其他中小学生家长。</p>
+  </div>
+  <div class="footer">学习有“机”，“信”关天下 · 调查组</div>
+ </div>`;
+}
+
+function renderEnd(){
+ hideBottom();setProgress();
+ app.innerHTML=`
+ <div class="thanks">
+  <div class="done">🙏</div>
+  <div class="card">
+   <h2>感谢您的关注！</h2>
+   <p>本次调查面向小学、初中阶段学生的家长，您孩子的就读阶段不在调查范围内，问卷到此结束。</p>
+   <p class="muted">欢迎转发给符合条件的朋友，感谢您的支持！</p>
+  </div>
+ </div>`;
+}
+
+/* 管理页：查看/导出本机已收集的答卷（#admin） */
+function renderAdmin(){
+ hideBottom();setProgress();
+ let resp=[];try{resp=JSON.parse(localStorage.getItem(LS_RESP)||"[]")}catch(e){}
+ const csv=()=>{
+  const ids=[...ORDER,"BI1","BI2","BI3"];
+  const head=["提交时间","组别","时长(秒)","S1","S2","S3","陷阱题通过","最长直线作答",...ids,
+   ...BEHAVIOR.buyer.map(q=>q.key),...BEHAVIOR.potential.map(q=>q.key),...DEMO.map(q=>q.key)];
+  const rows=resp.map(r=>[r.meta&&r.meta.end,r.group,r.meta&&r.meta.duration_sec,
+   r.s&&r.s.S1,r.s&&r.s.S2,r.s&&r.s.S3,r.flags&&r.flags.trap_ok,r.flags&&r.flags.straight_run,
+   ...ids.map(id=>(r.answers||{})[id]??""),...head.slice(9+ids.length).map(k=>(r.behavior&&r.behavior[k])!==undefined?(Array.isArray(r.behavior[k])?r.behavior[k].join("|"):r.behavior[k]):((r.demo||{})[k]??""))]);
+  const q=x=>'"'+String(x).replace(/"/g,'""')+'"';
+  return [head,...rows].map(r=>r.map(q).join(",")).join("\n");
+ };
+ app.innerHTML=`
+ <div class="hero" style="padding:20px"><h1 style="font-size:20px">答卷管理（本机数据）</h1>
+ <p class="sub">共收集 <b>${resp.length}</b> 份答卷。未配置收集接口时，答卷仅保存在填写者所用设备的浏览器中，请用同一设备导出。</p></div>
+ <div class="card">
+  <div class="btnrow"><button class="btn" id="excsv">导出 CSV</button></div>
+  <div class="btnrow"><button class="btn ghost" id="exjson">导出 JSON</button></div>
+  <div class="btnrow"><button class="btn ghost" id="clr">清空本机答卷</button></div>
+  <div class="btnrow"><button class="btn ghost" id="back">返回问卷</button></div>
+  ${resp.length?`<table class="adm"><tr><th>#</th><th>组别</th><th>时长</th><th>陷阱</th><th>提交时间</th></tr>
+   ${resp.map((r,i)=>`<tr><td>${i+1}</td><td>${r.group==="buyer"?"已购":"潜在"}</td><td>${r.meta&&r.meta.duration_sec}s</td><td>${r.flags&&r.flags.trap_ok?"✓":"✗"}</td><td>${(r.meta&&r.meta.end||"").slice(0,19).replace("T"," ")}</td></tr>`).join("")}</table>`:""}
+ </div>`;
+ const dl=(name,data,type)=>{const b=new Blob([data],{type});const u=URL.createObjectURL(b);
+  const a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)};
+ document.getElementById("excsv").onclick=()=>dl("survey_responses.csv","﻿"+csv(),"text/csv;charset=utf-8");
+ document.getElementById("exjson").onclick=()=>dl("survey_responses.json",JSON.stringify(resp,null,2),"application/json");
+ document.getElementById("clr").onclick=()=>{if(confirm("确认清空本机保存的全部答卷？此操作不可恢复。")){localStorage.removeItem(LS_RESP);renderAdmin()}};
+ document.getElementById("back").onclick=()=>{location.hash="";go(S.page==="thanks"?"cover":S.page)};
+}
+
+/* ================= 路由与交互 ================= */
+const R={cover:renderCover,screen:renderScreen,scale:renderScale,behavior:renderBehavior,demo:renderDemo,thanks:renderThanks,end:renderEnd};
+function go(p){S.page=p;window.scrollTo(0,0);saveDraft();R[p]()}
+function shakeApp(){app.classList.add("shake");setTimeout(()=>app.classList.remove("shake"),450)}
+
+app.addEventListener("click",e=>{
+ const b=e.target.closest("button[data-a]");if(!b)return;
+ const a=b.dataset.a;
+ if(a==="likert"){S.ans[b.dataset.id]=+b.dataset.val;
+  const box=b.parentElement.querySelectorAll("button");
+  box.forEach(x=>{x.classList.toggle("sel",x===b);x.setAttribute("aria-pressed",x===b)});
+  saveDraft();
+  const done=ORDER.filter(id=>S.ans[id]).length;
+  document.getElementById("bar").style.width=(20+Math.round(done/ORDER.length*45))+"%";
+  const left=ORDER.length-done;
+  if(left>0){remainEl.hidden=false;remainEl.querySelector("b").textContent="还剩 "+left+" 题"}else{remainEl.hidden=true}
+  mainbtn.textContent=left>0?("已答 "+done+" / "+ORDER.length+" 题"):"进入下一部分";
+  return}
+ const key=b.dataset.key,val=b.dataset.val;
+ if(a==="radio"){S.s[key]=val;b.parentElement.querySelectorAll("button").forEach(x=>x.classList.toggle("sel",x===b))}
+ else if(a==="single"){S.demo[key]=val;b.parentElement.querySelectorAll("button").forEach(x=>x.classList.toggle("sel",x===b))}
+ else if(a==="beh1"){S.beh[key]=val;b.parentElement.querySelectorAll("button").forEach(x=>x.classList.toggle("sel",x===b))}
+ else if(a==="multi"){const arr=S.beh[key]=S.beh[key]||[];
+  const i=arr.indexOf(val);if(i>=0)arr.splice(i,1);else arr.push(val);
+  b.classList.toggle("sel",arr.includes(val))}
+ saveDraft();
+});
+
+if(location.hash==="#admin"){renderAdmin()}
+else{
+ let resumed=false;
+ try{const d=JSON.parse(localStorage.getItem(LS_DRAFT)||"null");
+  if(d&&["scale","behavior","demo"].includes(d.page)){
+   Object.assign(S,{page:d.page,group:d.group,s:d.s||{},ans:d.ans||{},beh:d.beh||{},demo:d.demo||{},start:d.start||Date.now()});
+   if(confirm("检测到您有一份未完成的问卷，是否继续作答？（点“取消”将重新开始）")){
+    R[d.page]();resumed=true;
+   }else{localStorage.removeItem(LS_DRAFT);S.ans={};S.s={};S.beh={};S.demo={};S.group=null;S.page="cover"}
+  }}catch(e){}
+ if(!resumed)renderCover();
+}
+</script>
+</body>
+</html>
